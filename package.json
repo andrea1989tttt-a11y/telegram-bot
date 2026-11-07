@@ -1,0 +1,19 @@
+{
+  "name": "music-helper-bot",
+  "version": "1.0.0",
+  "description": "Telegram-бот: нотная грамота и ритм для ученика 3 класса ДМШ",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "check": "node scripts/check-content.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "license": "UNLICENSED",
+  "private": true,
+  "dependencies": {
+    "dotenv": "^16.4.7",
+    "telegraf": "^4.16.3"
+  }
+}
