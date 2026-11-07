@@ -5,7 +5,21 @@
  * Это не копия учебников и не заявленное полное соответствие оглавлению.
  */
 
+const { LECTURES } = require('./lectures');
+
 const SECTIONS = {
+  lecture: {
+    id: 'lecture',
+    title: '📚 Материал из учебника · Лекция',
+    topics: [
+      'lecture_staff',
+      'lecture_durations',
+      'lecture_rests',
+      'lecture_meter',
+      'lecture_rhythm',
+      'lecture_terms',
+    ],
+  },
   review: {
     id: 'review',
     title: '🔁 Повторение 1–2 класс',
@@ -41,6 +55,7 @@ const SECTIONS = {
 };
 
 const TOPICS = {
+  ...LECTURES,
   note_names: {
     id: 'note_names',
     sectionId: 'review',

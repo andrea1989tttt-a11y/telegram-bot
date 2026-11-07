@@ -58,6 +58,19 @@ for (const id of MIXED_QUESTION_IDS) {
 }
 
 for (const topicId of topicIds) {
+  const topic = TOPICS[topicId];
+  if (topic.practiceTopicId) {
+    const linked = getQuestionsByTopic(topic.practiceTopicId);
+    if (linked.length < 5) {
+      fail(
+        `Лекция ${topicId}: связанная тема ${topic.practiceTopicId} имеет мало вопросов (${linked.length})`,
+      );
+    } else {
+      ok(`Лекция ${topicId} → практика «${topic.practiceTopicId}»: ${linked.length} вопросов`);
+    }
+    continue;
+  }
+
   const list = getQuestionsByTopic(topicId);
   if (list.length < 5) {
     fail(`Тема ${topicId}: меньше 5 вопросов (${list.length})`);

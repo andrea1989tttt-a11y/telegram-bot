@@ -73,11 +73,11 @@ async function openSection(ctx, sectionId) {
   }
 
   resetToMenu(ctx.from.id);
-  await replyOrEdit(
-    ctx,
-    `${section.title}\n\nВыбери тему:`,
-    sectionKeyboard(sectionId),
-  );
+  const hint =
+    sectionId === 'lecture'
+      ? 'Выбери лекцию. Это свой пересказ тем тетради, не копия учебника.'
+      : 'Выбери тему:';
+  await replyOrEdit(ctx, `${section.title}\n\n${hint}`, sectionKeyboard(sectionId));
 }
 
 /**
@@ -92,8 +92,16 @@ async function openTopic(ctx, topicId) {
   }
 
   startTopic(ctx.from.id, topicId);
-  const text = `📖 ${topic.title}\n\n${topic.text}`;
-  await replyOrEdit(ctx, text, topicKeyboard());
+  const isLecture = topic.sectionId === 'lecture';
+  const prefix = isLecture ? '📚 Лекция:' : '📖';
+  const text = `${prefix} ${topic.title}\n\n${topic.text}`;
+  await replyOrEdit(
+    ctx,
+    text,
+    topicKeyboard({
+      practiceLabel: isLecture ? '✏️ Потренироваться по теме' : '✏️ Потренироваться',
+    }),
+  );
 }
 
 /**
@@ -257,7 +265,14 @@ async function startPractice(ctx) {
     return;
   }
 
-  const { questionIds } = pickQuizQuestions(ctx.from.id, topicId, {
+  const topic = TOPICS[topicId];
+  // У лекций тренировка идёт по связанной теме с готовыми заданиями.
+  const quizTopicId = topic.practiceTopicId || topicId;
+  if (quizTopicId !== topicId) {
+    startTopic(ctx.from.id, quizTopicId);
+  }
+
+  const { questionIds } = pickQuizQuestions(ctx.from.id, quizTopicId, {
     preferUnseen: true,
   });
 
@@ -270,10 +285,11 @@ async function startPractice(ctx) {
     return;
   }
 
+  const title = TOPICS[quizTopicId]?.title || topic.title;
   await beginQuiz(
     ctx,
     questionIds,
-    `✏️ Тренировка: ${TOPICS[topicId].title}\nОтветь на ${questionIds.length} вопросов.`,
+    `✏️ Тренировка: ${title}\nОтветь на ${questionIds.length} вопросов.`,
   );
 }
 

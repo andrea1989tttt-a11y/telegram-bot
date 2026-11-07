@@ -3,6 +3,7 @@ const { SECTIONS, TOPICS } = require('./content/topics');
 
 function mainMenuKeyboard() {
   return Markup.inlineKeyboard([
+    [Markup.button.callback(SECTIONS.lecture.title, 'section:lecture')],
     [Markup.button.callback(SECTIONS.review.title, 'section:review')],
     [Markup.button.callback(SECTIONS.notation.title, 'section:notation')],
     [Markup.button.callback(SECTIONS.rhythm.title, 'section:rhythm')],
@@ -28,9 +29,13 @@ function sectionKeyboard(sectionId) {
   return Markup.inlineKeyboard(rows);
 }
 
-function topicKeyboard() {
+/**
+ * @param {{ practiceLabel?: string }} [options]
+ */
+function topicKeyboard(options = {}) {
+  const practiceLabel = options.practiceLabel || '✏️ Потренироваться';
   return Markup.inlineKeyboard([
-    [Markup.button.callback('✏️ Потренироваться', 'practice')],
+    [Markup.button.callback(practiceLabel, 'practice')],
     [Markup.button.callback('⬅️ В меню', 'menu')],
   ]);
 }
